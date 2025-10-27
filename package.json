@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vercel dev",
-    "start": "vercel dev"
+    "start": "vercel dev",
+    "build": "npm run vercel-build",
+    "vercel-build": "rm -rf dist && mkdir -p dist && cp -R public/. dist"
   },
   "dependencies": {
     "@microlink/mql": "^0.13.0",
