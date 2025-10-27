@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Microlink Screenshot App</title>
+<link rel="stylesheet" href="/public/style.css" />
+</head>
+<body>
+<main>
+<h1>Screenshot-Grabber</h1>
+<form id="shot-form">
+<label>
+E‑Mail
+<input type="email" id="email" required />
+</label>
+<label>
+Webseite (URL)
+<input type="url" id="url" required />
+</label>
+<button type="submit">Screenshot erstellen</button>
+</form>
+
+
+<p id="status" aria-live="polite"></p>
+
+
+<div id="result" hidden>
+<h2>Gespeichertes Bild</h2>
+<a id="blobLink" href="#" target="_blank" rel="noreferrer noopener">Im neuen Tab öffnen</a>
+<div class="imgWrap">
+<img id="preview" alt="Screenshot Vorschau" />
+</div>
+</div>
+</main>
+
+
+<script>
+const DEFAULT_EMAIL = 'jan.rentzsch@googlemail.com';
+const DEFAULT_URL = 'https://www.wsj.com/market-data/currencies/exchangerates';
+const LS_KEY = 'microlink-screenshot-form';
+
+
+const emailEl = document.getElementById('email');
+const urlEl = document.getElementById('url');
+const statusEl = document.getElementById('status');
+const resultEl = document.getElementById('result');
+const previewEl = document.getElementById('preview');
+const blobLinkEl = document.getElementById('blobLink');
+
+
+// Load last inputs from localStorage (fallback to defaults)
+try {
+const saved = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+emailEl.value = saved.email || DEFAULT_EMAIL;
+urlEl.value = saved.url || DEFAULT_URL;
+} catch (e) {
+emailEl.value = DEFAULT_EMAIL;
+urlEl.value = DEFAULT_URL;
+}
+
+
+// Save on change
+function persist() {
+const payload = { email: emailEl.value.trim(), url: urlEl.value.trim() };
+localStorage.setItem(LS_KEY, JSON.stringify(payload));
+}
+emailEl.addEventListener('change', persist);
+urlEl.addEventListener('change', persist);
+
+
+// Handle submit
+document.getElementById('shot-form').addEventListener('submit', async (e) => {
+e.preventDefault();
+statusEl.textContent = 'Erstelle Screenshot…';
+resultEl.hidden = true;
+
+
+const email = emailEl.value.trim();
+const url = urlEl.value.trim();
+
+
+// persist latest values immediately
+persist();
+
+
+try {
+const res = await fetch('/api/screenshot', {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ email, url })
+});
+</html>
