@@ -1,0 +1,15 @@
+{
+"name": "microlink-screenshot-app",
+"version": "1.0.0",
+"private": true,
+"type": "module",
+"scripts": {
+"dev": "vercel dev",
+"start": "vercel dev"
+},
+"dependencies": {
+"@microlink/mql": "^0.13.0",
+"@vercel/blob": "^0.24.0",
+"undici": "^6.19.8"
+}
+}
